@@ -7,16 +7,29 @@
 # v0.1   2012-01-08 - Morgan Aldridge <morgant@makkintosshu.com>
 #                     Initial version, based on some of my tools like trash and
 #                     eject.
+# v0.1.1 2012-01-08 - Morgan Aldridge
+#                     Added version info and support for GNU-style options.
 # 
+
+# info
+tool=$(basename "$0")
+version='0.1.1'
+copyright=''
 
 # global variables
 verbose=false
 
 # print usage instructions (help)
 function usage() {
-	echo 'Usage: bash_stub [options]'
-	echo '  -h		print these usage instructions'
-	echo '  -v		verbose output'
+	echo "Usage: $tool [options]"
+	echo '  -h, --help      print these usage instructions'
+	echo '  -v, --verbose   verbose output'
+	echo '  -V, --version   print the version'
+}
+
+# print version info
+function version() {
+	echo "$tool v$version $copyright"
 }
 
 # see if any arguments were passed in
@@ -24,19 +37,27 @@ if [ $# -gt 0 ]; then
 	# if so, step through them all and process them
 	while [ $# -gt 0 ]; do
 		# see if the user intended us to run in verbose mode
-		if [ "$1" = "-v" ]; then
+		if [ "$1" = "-v" -o "$1" = "--verbose" ]; then
 			shift
 			verbose=true
 		# see if the user requested help
-		elif [ "$1" = "-h" ]; then
+		elif [ "$1" = "-h" -o "$1" = "--help" ]; then
 			shift
 			usage
 			exit
+		# see if the user requested the version
+		elif [ "$1" = "-V" -o "$1" = "--version" ]; then
+			shift
+			version
+			exit
 		# handle other options & arguments
+		else
+			
+			shift
 		fi
 	done
 else
-	echo 'No options or arguments were specified!'
+	echo "No options or arguments were specified!"$'\n'
 	usage
 	exit 1
 fi
