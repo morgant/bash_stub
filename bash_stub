@@ -1,0 +1,42 @@
+#!/bin/bash
+
+# 
+# bash_stub - This is the stub I use for creating new command line tools using 
+#             `bash`. It's always evolving.
+# 
+# v0.1   2012-01-08 - Morgan Aldridge <morgant@makkintosshu.com>
+#                     Initial version, based on some of my tools like trash and
+#                     eject.
+# 
+
+# global variables
+verbose=false
+
+# print usage instructions (help)
+function usage() {
+	echo 'Usage: bash_stub [options]'
+	echo '  -h		print these usage instructions'
+	echo '  -v		verbose output'
+}
+
+# see if any arguments were passed in
+if [ $# -gt 0 ]; then
+	# if so, step through them all and process them
+	while [ $# -gt 0 ]; do
+		# see if the user intended us to run in verbose mode
+		if [ "$1" = "-v" ]; then
+			shift
+			verbose=true
+		# see if the user requested help
+		elif [ "$1" = "-h" ]; then
+			shift
+			usage
+			exit
+		# handle other options & arguments
+		fi
+	done
+else
+	echo 'No options or arguments were specified!'
+	usage
+	exit 1
+fi
