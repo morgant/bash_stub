@@ -62,21 +62,28 @@ function version() {
 if [ $# -gt 0 ]; then
 	# if so, step through them all and process them
 	while [ $# -gt 0 ]; do
-		# see if the user intended us to run in verbose mode
-		if [ "$1" = "-v" -o "$1" = "--verbose" ]; then
-			shift
-			verbose=true
-		# see if the user requested help
-		elif [ "$1" = "-h" -o "$1" = "--help" ]; then
-			shift
-			usage
-			exit
-		# see if the user requested the version
-		elif [ "$1" = "-V" -o "$1" = "--version" ]; then
-			shift
-			version
-			exit
-		# handle other options & arguments
+		# is this an option or an argument?
+		if [ ${1:0:1} = "-" ]; then
+			# see if the user intended us to run in verbose mode
+			if [ "$1" = "-v" -o "$1" = "--verbose" ]; then
+				shift
+				verbose=true
+			# see if the user requested help
+			elif [ "$1" = "-h" -o "$1" = "--help" ]; then
+				usage
+				exit
+			# see if the user requested the version
+			elif [ "$1" = "-V" -o "$1" = "--version" ]; then
+				version
+				exit
+			# handle other options
+			
+			# unknown option
+			else
+				echo "$tool: Unknown option '$1'!"
+				exit 1
+			fi
+		# handle arguments
 		else
 			
 			shift
