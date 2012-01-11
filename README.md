@@ -11,7 +11,11 @@ This is the stub I use for creating new command line tools using `bash`. It's al
 Main features include:
 
 * Informational comment heading
-* Parsing command line arguments
+* Parsing command line options & arguments, incl. support for:
+	* Single options (e.g. "-h")
+	* Single options specified together (e.g. "-vpf")
+	* GNU-style long options (e.g. "--help")
+	* GNU-style long options using alternate value format (e.g. "--dry-run=off")
 * Help, version, and verbose options
 
 LICENSE

@@ -60,33 +60,75 @@ function version() {
 
 # see if any arguments were passed in
 if [ $# -gt 0 ]; then
-	# if so, step through them all and process them
+	# if so, step through them all and pre-process them (we do this so we can 
+	# support multiple options specified together, e.g.: -abc vs. -a -b -c),
+	# GNU-style long options with alternate style values, and for easier
+	# actual handling
+	argv=()
 	while [ $# -gt 0 ]; do
-		# is this an option or an argument?
-		if [ ${1:0:1} = "-" ]; then
-			# see if the user intended us to run in verbose mode
-			if [ "$1" = "-v" -o "$1" = "--verbose" ]; then
-				shift
-				verbose=true
-			# see if the user requested help
-			elif [ "$1" = "-h" -o "$1" = "--help" ]; then
-				usage
-				exit
-			# see if the user requested the version
-			elif [ "$1" = "-V" -o "$1" = "--version" ]; then
-				version
-				exit
-			# handle other options
-			
-			# unknown option
+		# is this an option (e.g. starts with a dash) or an argument?
+		if [ "${1:0:1}" = "-" ]; then
+			# is it a GNU-style long option (e.g. starts with a double-dash)?
+			if [ "${1:0:2}" = "--" ]; then
+				# push the option (everything before an equals) onto argv
+				argv=("${argv[@]}" "${1%%=*}")
+				
+				# is it the alternate "--long-opt=value" format? if so, make it
+				# "--long-opt value" format buy pushing the value (everything after the
+				# equals) on as a separate argument
+				case "$1" in *=*)
+					argv=("${argv[@]}" "${1##*=}") ;;
+				esac
+			# otherwise, is it multiple single options specified together?
+			elif [ ${#1} -gt 2 ]; then
+				tmp="$1"
+				# push each onto argv as single options
+				for (( i=1; i < ${#tmp}; i++ )); do
+					argv=("${argv[@]}" "-${tmp:$i:1}")
+				done
+			# otherwise, it must be a single option so just push it onto argv
 			else
-				echo "$tool: Unknown option '$1'!"
-				exit 1
+				argv=("${argv[@]}" "$1")
 			fi
-		# handle arguments
-		else
-			
 			shift
+		# arguments just get pushed onto argv in order too
+		else
+			argv=("${argv[@]}" "$1")
+			shift
+		fi
+	done
+	argc=${#argv[@]}
+		
+	# now that we've pre-processed the options, go through them all for real
+	for (( i=0; i<$argc; i++ )); do
+		# is this an option (e.g. starts with a dash) or an argument?
+		if [ "${argv[$i]:0:1}" = "-" ]; then
+			case "${argv[$i]}" in
+				# see if the user intended us to run in verbose mode
+				"-v" | "--verbose")
+					verbose=true
+					;;
+				# see if the user requested help
+				"-h" | "--help")
+					usage
+					exit
+					;;
+				# see if the user requested the version
+				"-V" | "--version")
+					version
+					exit
+					;;
+				# handle other options
+			
+				# unknown option
+				*)
+					echo "$tool: Unknown option '$1'!"
+					exit 1
+					;;
+			esac
+		# handle arguments
+		# else
+			# one would normally handle arguments here
 		fi
 	done
 else
