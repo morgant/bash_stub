@@ -13,10 +13,19 @@ Main features include:
 * Informational comment heading
 * Parsing command line options & arguments, incl. support for:
 	* Single options (e.g. "-h")
-	* Single options specified together (e.g. "-vpf")
+	* Single options specified together (e.g. "-tzf")
 	* GNU-style long options (e.g. "--help")
 	* GNU-style long options using alternate value format (e.g. "--dry-run=off")
 * Help, version, and verbose options
+
+WHY NOT GETOPT/GETOPTS?
+-----------------------
+
+`getopt` & `getopts` can greatly simplify parsing command line options & arguments, but both have limitations that I don't want to be stuck with. I'd like to have the best of both options, plus additional features, and I've been able to get that by rolling my own options & argument parsing.
+
+`getopt` supports single options (e.g. "-h"), single options specified together (e.g. "-tzf"), and GNU-style long options (e.g. "--help"), but doesn't support white space in arguments, even when escaped, on many platforms. Many (all?) versions of Mac OS X are afflicted by this, plus Mac file systems have always supported spaces in file names, greatly increasing the likelihood of running into that limitation.
+
+`getopts` supports quoted arguments, but does not support GNU-style long options (e.g. "--help"). While long options can be lived without, I find that they help further clarify a tool's documentation and make it easier to test & troubleshoot a tool's various options with fewer mistakes.
 
 LICENSE
 -------

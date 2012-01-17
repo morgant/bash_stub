@@ -11,6 +11,10 @@
 #                     eject.
 # v0.1.1 2012-01-08 - Morgan Aldridge
 #                     Added version info and support for GNU-style options.
+# v0.1.2 2012-01-11 - Morgan Aldridge
+#                     Revamped support for parsing command line options, incl.
+#                     multiple single options specified together & GNU-style
+#                     long options (and with alternate style values).
 # 
 # LICENSE:
 # 
@@ -39,7 +43,7 @@
 
 # info
 tool=$(basename "$0")
-version='0.1.1'
+version='0.1.2'
 copyright=''
 
 # global variables
